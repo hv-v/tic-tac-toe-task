@@ -172,11 +172,11 @@ Item {
             }
 
             if (!internal.errorModel) {
-                return "Error model is undefine";
+                return "Error model is undefined";
             }
 
             if (internal.errorModel.error === ErrorType.Invalid) {
-                return "Undefine error type";
+                return "Undefined error type";
             }
 
             return internal._errorMessageImpl(internal.errorModel.error);
@@ -184,19 +184,19 @@ Item {
 
         function _errorMessageImpl(errorType) {
             if (errorType === ErrorType.PlayerTypeAlreadyExist) {
-                return qsTr("Player type already exist, choose another one");
+                return qsTr("Player type already exists, please choose another one.");
             }
 
             if (errorType === ErrorType.FirstMarkIsCross) {
-                return qsTr("First player mark is Cross X ");
+                return qsTr("The first player's mark is a Cross X");
             }
 
             if (errorType === ErrorType.PlayerNameAlreadyExist) {
-                return qsTr("Use another name");
+                return qsTr("Please use a different name");
             }
 
             if (errorType === ErrorType.PlayerMarkAlreadyExist) {
-                return qsTr("Use another mark");
+                return qsTr("Please use a different mark");
             }
 
             if (errorType === ErrorType.RunningStatus) {
@@ -207,7 +207,7 @@ Item {
                 return qsTr("The number of players is not enough to start the game. Please add at least 2 players.");
             }
 
-            return qsTr("Unregister error type");
+            return qsTr("Unregistered error type");
         }
 
     }
