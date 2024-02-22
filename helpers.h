@@ -20,6 +20,7 @@ enum class ErrorsType
     PlayerNameAlreadyExist,
     PlayerMarkAlreadyExist,
     FirstMarkIsCross,
+    RunningStatus,
 };
 
 Q_ENUM_NS(ErrorsType)

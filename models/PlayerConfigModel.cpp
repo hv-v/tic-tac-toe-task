@@ -46,6 +46,12 @@ void PlayerConfigModel::removePlayer(const int rawIndex) {
         return;
     }
 
+    if (m_gameImpl.gameStatus()) {
+        emit m_gameImpl.findError(helpers::error_handler::ErrorsType::RunningStatus);
+        return;
+    }
+
+
     beginRemoveRows(QModelIndex(), rawIndex, rawIndex);
     m_gameImpl.removePlayer(rawIndex);
     m_playersInfo.erase(std::next(m_playersInfo.begin(), rawIndex));
@@ -83,6 +89,10 @@ std::optional<helpers::error_handler::ErrorsType> PlayerConfigModel::checkErrors
                                                                       helpers::PlayerMark mark,
                                                                       helpers::PlayerType type) const {
     using ErrorsType = helpers::error_handler::ErrorsType;
+
+    if (m_gameImpl.gameStatus()) {
+        return ErrorsType::RunningStatus;
+    }
 
     if (playerName.isEmpty()) {
         return ErrorsType::NameIsEmpty;

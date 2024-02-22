@@ -199,6 +199,10 @@ Item {
                 return qsTr("Use another mark");
             }
 
+            if (errorType === ErrorType.RunningStatus) {
+                return qsTr("Stop the game before changing the player list");
+            }
+
             return qsTr("Unregister error type");
         }
 
