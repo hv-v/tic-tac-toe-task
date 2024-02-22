@@ -51,7 +51,6 @@ void PlayerConfigModel::removePlayer(const int rawIndex) {
         return;
     }
 
-
     beginRemoveRows(QModelIndex(), rawIndex, rawIndex);
     m_gameImpl.removePlayer(rawIndex);
     m_playersInfo.erase(std::next(m_playersInfo.begin(), rawIndex));

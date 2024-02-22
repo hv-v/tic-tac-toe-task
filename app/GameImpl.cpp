@@ -137,6 +137,7 @@ bool Game::boardIsValid() const {
 
 void Game::startGame() {
     if (m_impl->playersList.size() < 2) {
+        emit findError(helpers::error_handler::ErrorsType::PlayersAmount);
         changeGameStatus(false);
         return;
     }

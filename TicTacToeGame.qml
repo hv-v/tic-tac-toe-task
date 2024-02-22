@@ -203,6 +203,10 @@ Item {
                 return qsTr("Stop the game before changing the player list");
             }
 
+            if (errorType === ErrorType.PlayersAmount) {
+                return qsTr("The number of players is not enough to start the game. Please add at least 2 players.");
+            }
+
             return qsTr("Unregister error type");
         }
 
