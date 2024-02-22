@@ -4,6 +4,10 @@
 
 namespace {
 
+const int k_maxScore = 100;
+const int k_defaultBestMove = -1;
+const char * const k_defaultBotPrefix = "_Bot";
+
 bool isBoardFull(const std::vector<tic_tac_toe::helpers::PlayerMark> & board) {
     using PlayerMark = tic_tac_toe::helpers::PlayerMark;
     return std::all_of(board.begin(), board.end(), [](const auto el) { return el != PlayerMark::Empty; });
@@ -41,11 +45,11 @@ std::optional<int> currentBoardState(const std::vector<tic_tac_toe::helpers::Pla
     const auto oppMark = findOpponentMark(board, playerMark);
 
     if (tic_tac_toe::helpers::isWinner(board, playerMark, width)) {
-        return 100;
+        return k_maxScore;
     }
 
     if (tic_tac_toe::helpers::isWinner(board, oppMark, width)) {
-        return -100;
+        return -k_maxScore;
     }
 
     if (isBoardFull(board)) {
@@ -59,13 +63,10 @@ int minimax(std::vector<tic_tac_toe::helpers::PlayerMark>& board,
             tic_tac_toe::helpers::PlayerMark playerMark,
             tic_tac_toe::helpers::PlayerMark opponentMark,
             int width,
-            int depth,
             bool isMaximizingPlayer) {
     if (auto boardStateOp = currentBoardState(board, playerMark, width); boardStateOp) {
         return boardStateOp.value();
     }
-
-    using PlayerMark = tic_tac_toe::helpers::PlayerMark;
 
     if (isMaximizingPlayer) {
         int bestValue = std::numeric_limits<int>::min();
@@ -75,7 +76,7 @@ int minimax(std::vector<tic_tac_toe::helpers::PlayerMark>& board,
                 continue;
             }
 
-            const int value = minimax(board, playerMark, opponentMark, width, depth, false);
+            const int value = minimax(board, playerMark, opponentMark, width, false);
             bestValue = std::max(bestValue, value);
 
             undoTmpMove(board, index, playerMark);
@@ -91,7 +92,7 @@ int minimax(std::vector<tic_tac_toe::helpers::PlayerMark>& board,
             continue;
         }
 
-        const int value = minimax(board, playerMark, opponentMark, width, depth, true);
+        const int value = minimax(board, playerMark, opponentMark, width, true);
         bestValue = std::min(bestValue, value);
 
         undoTmpMove(board, index, playerMark);
@@ -114,14 +115,14 @@ int bestMove(std::vector<tic_tac_toe::helpers::PlayerMark>& board,
     const auto oppMark = findOpponentMark(board, playerMark);
 
     int bestValue = std::numeric_limits<int>::min();
-    int bestMove = -1;
+    int bestMove = k_defaultBestMove;
 
     for (int index = 0; index < board.size(); ++index) {
         if (!makeTmpMove(board, index, playerMark)) {
             continue;
         }
 
-        const int moveValue = minimax(board, playerMark, oppMark, width, 0, false);
+        const int moveValue = minimax(board, playerMark, oppMark, width, false);
 
         undoTmpMove(board, index, playerMark);
         if (moveValue > bestValue) {
@@ -138,7 +139,7 @@ int bestMove(std::vector<tic_tac_toe::helpers::PlayerMark>& board,
 namespace tic_tac_toe {
 
 BotPlayerVisitor::BotPlayerVisitor(const QByteArray &name, const helpers::PlayerMark mr)
-    : PlayerVisitor(name + "_Bot", mr, helpers::PlayerType::Bot_Player) {
+    : PlayerVisitor(name + k_defaultBotPrefix, mr, helpers::PlayerType::Bot_Player) {
 
 }
 
@@ -150,16 +151,10 @@ void BotPlayerVisitor::playerMove(GameBoardImpl &board, const helpers::NextMoveI
     }
 
     const helpers::PlayerMark mark = PlayerVisitor::getMark();
-
-    // TODO: count position
     std::vector<helpers::PlayerMark> boardData = board.getBoard();
     int index = bestMove(boardData, mark, board.width());
 
-    if (index == -1) {
-        assert(false);
-    }
-
-
+    assert(index != k_defaultBestMove);
     board.action(index, mark);
 }
 
